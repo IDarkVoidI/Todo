@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
-import { Input, Button, Tag, Text } from '@chakra-ui/react';
+import { Input, Button, Tag, Text, Container, Box, HStack } from '@chakra-ui/react';
 import Todo from './Components/Todo';
 
 function App() {
@@ -61,31 +61,31 @@ function App() {
   }
 
   return (
-    <div className='App'>
-      <Text color={'blue.200'} fontSize={'5xl'}>Todo App!</Text>
+    <Container textAlign={'center'}>
+      <Text color={'blue.200'} fontSize={'5xl'} mt={10}>Todo App!</Text>
       <div>
-        <form onSubmit={handleSubmit}>
-          <Input _placeholder={{ color: 'inherit' }} color='blue.200' focusBorderColor='blue.200' required mt={10} size='lg' width={'500px'} value={todoItem} type={'text'} placeholder="Add a new task!" onChange={(event) => setTodoItem(event.target.value)} />
-          <Button ml={2} mb={1.5} size={'lg'} colorScheme='blue' type='submit'>Create</Button>
-        </form>
+        <Box mt={20} as='form' onSubmit={handleSubmit} display={'flex'} alignItems={'center'}>
+          <Input _placeholder={{ color: 'inherit' }} color='blue.200' focusBorderColor='blue.200' required size='lg' width={'500px'} value={todoItem} type={'text'} placeholder="Add a new task!" onChange={(event) => setTodoItem(event.target.value)} />
+          <Button ml={2} size={'lg'} colorScheme='blue' type='submit'>Create</Button>
+        </Box>
       </div>
       {/* Todo items container */}
-      <div className='content-container'>
-        <div className='h-stack'>
-          <div className='h-stack'>
-            <Text color='blue.200' ml={'810px'}>Created Tasks</Text><Tag borderRadius={'full'}>{allTodos.length}</Tag>
-          </div>
-          <div className='h-stack'>
-            <Text color='blue.200' >Done Tasks</Text><Tag mr={'810px'} borderRadius={'full'}>{checkedTodos} of {allTodos.length}</Tag>
-          </div>
-        </div>
+      <Container mt={16}>
+        <HStack justifyContent={'space-between'} alignItems={'center'}>
+          <Box display={'flex'}>
+            <Text color='blue.200'>Created Tasks</Text><Tag borderRadius={'full'}>{allTodos.length}</Tag>
+          </Box>
+          <Box display={'flex'}>
+            <Text color='blue.200' >Done Tasks</Text><Tag borderRadius={'full'}>{checkedTodos} of {allTodos.length}</Tag>
+          </Box>
+        </HStack>
         <div>
           {allTodos.map((i) => (
             <Todo id={i.id} isChecked={i.isChecked} title={i.title} handleDelete={handleDelete} handleComplete={handleComplete} />
           ))}
         </div>
-      </div>
-    </div >
+      </Container>
+    </Container >
   );
 }
 
