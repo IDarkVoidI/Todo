@@ -3,11 +3,10 @@ import './App.css';
 import { v4 as uuidv4 } from 'uuid';
 import { Input, Button, Tag, Text, Container, Box, HStack } from '@chakra-ui/react';
 import Todo from './Components/Todo';
+import { useTodo } from './hooks/useTodo'
 
 function App() {
-  const [todoItem, setTodoItem] = useState("")
-  const [allTodos, setAllTodos] = useState(JSON.parse(localStorage.getItem("todos")) || [])
-  const [checkedTodos, setCheckedTodos] = useState(JSON.parse(localStorage.getItem("done")) || 0)
+  const { todoItem, checkedTodos, setTodoItem, allTodos, handleSubmitTodo, handleDeleteTodo, handleCompleteTodo } = useTodo()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -16,48 +15,12 @@ function App() {
       isChecked: false,
       id: uuidv4()
     }
-    setAllTodos([...allTodos, newTodo])
-    setTodoItem("")
-    localStorage.setItem('todos', JSON.stringify([...allTodos, newTodo]))
+    handleSubmitTodo(newTodo)
   }
 
   const handleDelete = (id) => {
     const filteredData = allTodos.filter((todoObj) => todoObj.id !== id)
-    setAllTodos(filteredData)
-    if (checkedTodos !== 0) {
-      setCheckedTodos(checkedTodos - 1)
-      localStorage.setItem('done', JSON.stringify(checkedTodos - 1))
-    }
-    localStorage.setItem('todos', JSON.stringify(filteredData))
-  }
-
-  const handleComplete = (id) => {
-    const updatedData = allTodos.map(todoObj => {
-      // find the right todo
-      if (todoObj.id === id) {
-        // if todo is already checked, uncheck it
-        if (todoObj.isChecked) {
-          setCheckedTodos(checkedTodos - 1)
-          localStorage.setItem('done', JSON.stringify(checkedTodos - 1))
-          return {
-            title: todoObj.title,
-            id: todoObj.id,
-            isChecked: false
-          }
-        }
-        // else check it
-        setCheckedTodos(checkedTodos + 1)
-        localStorage.setItem('done', JSON.stringify(checkedTodos + 1))
-        return {
-          title: todoObj.title,
-          id: todoObj.id,
-          isChecked: true
-        }
-      }
-      return todoObj
-    })
-    setAllTodos(updatedData)
-    localStorage.setItem('todos', JSON.stringify(updatedData))
+    handleDeleteTodo(filteredData)
   }
 
   return (
@@ -81,7 +44,7 @@ function App() {
         </HStack>
         <div>
           {allTodos.map((i) => (
-            <Todo id={i.id} isChecked={i.isChecked} title={i.title} handleDelete={handleDelete} handleComplete={handleComplete} />
+            <Todo id={i.id} isChecked={i.isChecked} title={i.title} handleDelete={handleDelete} handleComplete={handleCompleteTodo} />
           ))}
         </div>
       </Container>
